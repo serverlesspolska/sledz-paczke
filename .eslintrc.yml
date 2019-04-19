@@ -1,0 +1,14 @@
+extends: airbnb-base
+rules:
+  semi: off
+  line-break-style: off
+  linebreak-style: off
+  no-use-before-define: off
+  import/prefer-default-export: off
+  comma-dangle: off
+  no-console: off
+  class-methods-use-this: off
+env:
+  # jasmine: true
+  node: true
+  jest: true

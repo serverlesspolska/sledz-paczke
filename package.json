@@ -1,0 +1,22 @@
+{
+  "name": "sledz-paczke",
+  "version": "1.0.0",
+  "description": "A bootstrap project with a set of preconfigured libraries so you can start faster you Lambda coding.",
+  "main": "handler.js",
+  "scripts": {
+    "test": "jest",
+    "eslint": "node_modules/.bin/eslint src/**/*.js --ignore-pattern node_modules/"
+  },
+  "author": "Pawel Zubkiewicz",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^5.15.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jest": "^24.1.0",
+    "lambda-tester": "^3.5.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}

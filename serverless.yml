@@ -1,0 +1,24 @@
+service: sledz-paczke
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs8.10
+  profile: ${self:custom.myProfile.${self:custom.myStage}}
+  region: ${self:custom.myRegion.${self:custom.myStage}}
+
+custom:
+  myStage: ${opt:stage, self:provider.stage}
+  myProfile:
+    dev: default
+    prod: default
+  myRegion:
+    dev: eu-west-1
+    prod: eu-west-1
+
+functions:
+  checkPackage:
+    handler: src/checkPackage/lambda.main
+    description: Checks package info on website 
+    memorySize: 128
+    timeout: 25
