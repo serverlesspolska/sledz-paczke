@@ -3,22 +3,24 @@ const axios = require('axios');
 const DHL = 'https://www.dhl.com.pl/shipmentTracking?countryCode=pl&languageCode=pl&AWB='
 const PP = 'http://mobilna.poczta-polska.pl/MobiPost/getpackage?action=getPackageData&search='
 
-const fetchPackageInfo = (packageId, comapny) => axios
-  .get(`${url(comapny)}${packageId}`)
+const fetchPackageInfo = (packageId, company) => axios
+  .get(`${url(company)}${packageId}`)
   .then(body => body.data)
   .then((obj) => {
-    switch (comapny) {
+    switch (company) {
       case 'pp':
         return makeCanonicalFromPocztaPolska(obj)
       case 'dhl':
         return makeCanonicalFromDhl(obj)
       default:
-        throw new Error(`Provider ${comapny} not supported`)
+        throw new Error(`Provider ${company} not supported`)
     }
   })
   .catch((e) => {
     console.log(e);
-    throw new Error(e.message)
+    // throw new Error(e.message)
+    console.log('package not available anymore')
+    return {}
   });
 
 const url = (company) => {
@@ -32,12 +34,14 @@ const url = (company) => {
   }
 }
 
+const stringToIsoDate = string => new Date(Date.parse(string)).toISOString()
+
 const makeCanonicalFromPocztaPolska = (body) => {
   const o = body[0]
 
   const transformEvent = (e, index) => ({
     index,
-    time: e.czasZadrzenia,
+    time: stringToIsoDate(e.czasZadrzenia),
     location: e.daneSzczegJednostki,
     name: e.nazwa
   })
@@ -46,7 +50,7 @@ const makeCanonicalFromPocztaPolska = (body) => {
     sendDate: o.dataNadania,
     fromLocation: o.jednstkaNadania,
     delivered: o.zdarzenia.filter(e => e.nazwa === 'Doręczenie' || e.nazwa === 'Przesyłka odebrana w punkcie').length > 0,
-    lastEventDate: o.zdarzenia.slice(-1).pop().czasZadrzenia,
+    lastEventDate: stringToIsoDate(o.zdarzenia.slice(-1).pop().czasZadrzenia),
     events: o.zdarzenia.map(transformEvent)
   }
 }
@@ -55,6 +59,7 @@ const makeCanonicalFromDhl = (body) => {
   const o = body.results[0]
 
   const dateFromEvent = (e) => {
+    // eslint-disable-next-line no-unused-vars
     const [dayName, monthDay, year] = e.date.split(', ')
     const day = monthDay.replace('styczeń ', '01-').replace('luty ', '02-').replace('marzec ', '03-')
     return `${year.trim()}-${day} ${e.time}`
@@ -83,5 +88,6 @@ const makeCanonicalFromDhl = (body) => {
 }
 
 module.exports = {
-  fetchPackageInfo
+  fetchPackageInfo,
+  stringToIsoDate
 }
