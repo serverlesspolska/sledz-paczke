@@ -59,6 +59,7 @@ const makeCanonicalFromDhl = (body) => {
   const o = body.results[0]
 
   const dateFromEvent = (e) => {
+    if (!e) return ''
     // eslint-disable-next-line no-unused-vars
     const [dayName, monthDay, year] = e.date.split(', ')
     const day = monthDay.replace('styczeń ', '01-').replace('luty ', '02-').replace('marzec ', '03-')
