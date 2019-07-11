@@ -5,3 +5,6 @@ jspm_packages
 # Serverless directories
 .serverless
 .vscode
+
+# files
+sledz-paczke.png

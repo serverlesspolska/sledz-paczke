@@ -12,6 +12,15 @@ provider:
         - "sns:Publish"
       Resource:
         - Ref: snsFanoutTopic
+    - Effect: Allow
+      Action: # TODO not all permissions are needed
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.dynamoTableName}"
   
 custom:
   myStage: ${opt:stage, self:provider.stage}
@@ -23,6 +32,7 @@ custom:
     prod: eu-west-1
 
   snsFanoutTopicName: fanout-topic
+  dynamoTableName: ${self:service}-${self:custom.myStage}
 
 functions:
   checkPackage:
@@ -30,6 +40,8 @@ functions:
     description: Checks package info on website 
     memorySize: 128
     timeout: 25
+    environment:
+      dynamoTableName: ${self:custom.dynamoTableName}
     events:
       - sns: 
           arn: !Ref snsFanoutTopic
@@ -42,6 +54,7 @@ functions:
     timeout: 5
     environment:
       snsFanoutTopicArn: !Ref snsFanoutTopic
+      dynamoTableName: ${self:custom.dynamoTableName}
 
 resources:
   Resources:
@@ -50,3 +63,18 @@ resources:
       Properties:
         DisplayName: "SledzPaczke fan-out topic"
         TopicName: ${self:custom.snsFanoutTopicName}
+    
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: packageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: packageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.dynamoTableName}
