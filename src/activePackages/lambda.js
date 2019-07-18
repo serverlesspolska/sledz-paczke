@@ -1,5 +1,7 @@
-// eslint-disable-next-line import/no-unresolved
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-unresolved */
 const SNS = require('aws-sdk/clients/sns')
+const DynamoDB = require('aws-sdk/clients/dynamodb')
 
 // eslint-disable-next-line no-unused-vars
 module.exports.main = async (event) => {
@@ -12,16 +14,17 @@ module.exports.main = async (event) => {
 
 const fetchActivePackagesFromDb = async () => {
   console.log('Running fetchActivePackagesFromDb');
-
-  // for time being we just return static package info
-  const sampleData = [
-    {
-      packageId: '00259007738703874264',
-      company: 'pp',
-      lastEventDate: new Date().toISOString()
-    }
-  ]
-  return sampleData
+  const dynamodb = new DynamoDB.DocumentClient()
+  const params = {
+    TableName: process.env.dynamoTableName
+  }
+  return dynamodb.scan(params).promise().then((result) => {
+    console.log(`Fetched ${result.Items.length} item(s) from database`);
+    return result.Items
+  }).catch((error) => {
+    console.error(error)
+    throw new Error(error.message)
+  })
 }
 
 const sendToSns = async (vo) => {

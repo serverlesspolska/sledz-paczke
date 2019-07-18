@@ -17,7 +17,7 @@ describe('Package data provider', () => {
 
     // test
     const actual = await provider.fetchPackageInfo('4317584051', 'dhl')
-    console.log(actual);
+    console.log(JSON.stringify(actual));
 
     expect(actual).toBeDefined()
     expect(actual.delivered).toBeTruthy()

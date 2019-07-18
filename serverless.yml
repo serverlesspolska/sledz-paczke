@@ -55,6 +55,8 @@ functions:
     environment:
       snsFanoutTopicArn: !Ref snsFanoutTopic
       dynamoTableName: ${self:custom.dynamoTableName}
+    events:
+      - schedule: cron(0 * * * ? *)
 
 resources:
   Resources:
