@@ -58,6 +58,18 @@ functions:
     events:
       - schedule: cron(0 * * * ? *)
 
+  sendSms:
+    handler: src/sendSms/lambda.main
+    description: Sends SMS message about with package update
+    memorySize: 128
+    timeout: 5
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn: !GetAtt DynamoDbTable.StreamArn
+
 resources:
   Resources:
     snsFanoutTopic:
@@ -80,3 +92,5 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.dynamoTableName}
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE

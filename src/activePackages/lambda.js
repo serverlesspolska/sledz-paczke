@@ -16,7 +16,14 @@ const fetchActivePackagesFromDb = async () => {
   console.log('Running fetchActivePackagesFromDb');
   const dynamodb = new DynamoDB.DocumentClient()
   const params = {
-    TableName: process.env.dynamoTableName
+    TableName: process.env.dynamoTableName,
+    FilterExpression: '#field <> :value',
+    ExpressionAttributeNames: {
+      '#field': 'delivered',
+    },
+    ExpressionAttributeValues: {
+      ':value': true
+    }
   }
   return dynamodb.scan(params).promise().then((result) => {
     console.log(`Fetched ${result.Items.length} item(s) from database`);

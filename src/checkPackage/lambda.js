@@ -20,8 +20,9 @@ module.exports.main = async (event) => {
     console.log(`Something new happened to the package ${packageId}`)
     const [lastEvent] = currentPackageState.events.slice(-1)
     const lastMessage = `${lastEvent.name} [${lastEvent.location}]`
+    const { delivered } = currentPackageState
 
-    await dbHelper.update(packageId, currentLastEventDate, lastMessage)
+    await dbHelper.update(packageId, currentLastEventDate, lastMessage, delivered)
   } else {
     console.log(`No updates about the package ${packageId} from ${company}`);
   }
