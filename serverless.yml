@@ -12,6 +12,11 @@ provider:
         - "sns:Publish"
       Resource:
         - Ref: snsFanoutTopic
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+      Resource:
+        - "*"
     - Effect: Allow
       Action: # TODO not all permissions are needed
         - dynamodb:Query
@@ -63,6 +68,8 @@ functions:
     description: Sends SMS message about with package update
     memorySize: 128
     timeout: 5
+    environment:
+      phoneNumber: ${file(secret.yml):phoneNumber}
     events:
       - stream:
           type: dynamodb
