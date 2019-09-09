@@ -61,7 +61,7 @@ functions:
       snsFanoutTopicArn: !Ref snsFanoutTopic
       dynamoTableName: ${self:custom.dynamoTableName}
     events:
-      - schedule: cron(0 * * * ? *)
+      - schedule: cron(*/15 7-22 ? * MON-SAT *)
 
   sendSms:
     handler: src/sendSms/lambda.main

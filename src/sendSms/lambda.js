@@ -39,5 +39,5 @@ const sendSms = async (event) => {
     .then((data) => {
       console.log(`SMS sent. RequestId=${data.ResponseMetadata.RequestId}`)
     })
-    .catch(err => console.log(err))
+    .catch((err) => console.log(err))
 }
