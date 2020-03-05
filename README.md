@@ -1,7 +1,7 @@
 # Sledz Paczke
 
-Aplikacja napisana w serverless jako przykład w kursie wideo dostępnym na Serverless Polska.
-Więcej informacji https://serverlesspolska.pl/2019/03/20/sledz-paczke/
+Aplikacja napisana w serverless jako przykład w kursie wideo dostępnym w Akademii Serverless Polska.
+Więcej informacji https://akademia.serverlesspolska.pl/sledz-paczke/
 
 
 ## Jak używać?
